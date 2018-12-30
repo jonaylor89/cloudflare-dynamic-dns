@@ -24,14 +24,11 @@ def main(cf, zone, target_record):
     current_ip = get_current_ip()
     
     while True:
-        print("checking for record")
         record_id = search_zone_for_record(cf,zone,target_record)
-        print(record_id)
         if record_id:
             dns_ip = get_ip_by_dns(target_record)
             print("Record Ip is",dns_ip,"current_ip is",current_ip)
             if current_ip == dns_ip:
-          
                 dns_record={'name':target_record,'type':'A','content':current_ip}
                 cf.zones.dns_records.delete(zone,record_id)         
                 r = cf.zones.dns_records.post(zone, data=dns_record)
