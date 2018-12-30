@@ -28,7 +28,7 @@ def main(cf, zone, target_record, delay):
         if record_id:
             dns_ip = get_ip_by_dns(target_record)
             print("Record Ip is",dns_ip,"current_ip is",current_ip)
-            if current_ip == dns_ip:
+            if current_ip != dns_ip:
                 dns_record={'name':target_record,'type':'A','content':current_ip}
                 cf.zones.dns_records.delete(zone,record_id)         
                 r = cf.zones.dns_records.post(zone, data=dns_record)
