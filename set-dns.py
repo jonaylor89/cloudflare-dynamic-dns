@@ -20,7 +20,7 @@ def search_zone_for_record(cf, zone_id, target_record):
             return record['id']
     return False
 
-def main(cf, zone, target_record):
+def main(cf, zone, target_record, delay):
     current_ip = get_current_ip()
     
     while True:
@@ -38,7 +38,7 @@ def main(cf, zone, target_record):
             dns_record={'name':target_record,'type':'A','content':current_ip}
             r = cf.zones.dns_records.post(zone, data=dns_record)
 
-        time.sleep(10)
+        time.sleep(delay)
 
 
 if __name__ == '__main__':
@@ -46,5 +46,6 @@ if __name__ == '__main__':
     token = os.environ['CF_TOKEN']
     zone = os.environ['CF_ZONE_ID']
     target_record = os.environ['TARGET_RECORD']
+    delay=int(os.getenv('DELAY',30))
     cf=CloudFlare.CloudFlare(email=email, token=token)
-    main(cf,zone,target_record)
+    main(cf,zone,target_record,delay)
