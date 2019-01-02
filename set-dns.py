@@ -27,14 +27,14 @@ def main(cf, zone, target_record, delay):
 
         if record_id:
             dns_ip = get_ip_by_dns(target_record)
-            print("Record IP is {0} current IP is {1}", dns_ip, current_ip)
 
             if current_ip != dns_ip:
+                print("mismatch:\n--> record IP: {0}\n--> current IP: {1}", dns_ip, current_ip)
                 dns_record={'name':target_record,'type':'A','content':current_ip}
                 cf.zones.dns_records.delete(zone,record_id)         
                 r = cf.zones.dns_records.post(zone, data=dns_record)
             else:
-                print("not changing the record since it's already correct")
+                print("IPs: {0}", current_ip)
         else:
             dns_record={'name':target_record,'type':'A','content':current_ip}
             r = cf.zones.dns_records.post(zone, data=dns_record)
