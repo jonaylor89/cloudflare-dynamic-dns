@@ -14,11 +14,11 @@ def get_current_ip():
     return ip
 
 def search_zone_for_record(cf, zone_id, target_record):
-    dns_records = cf.zones.dns_records.get(zone_id)
-    for record in dns_records:
-        if record['name'] == target_record:
-            return record['id']
-    return False
+    dns_records = cf.zones.dns_records.get(zone_id, params={name: target_record})
+    if len(dns_records) != 0:
+        return record[0]['id']
+    else:
+        return False
 
 def main(cf, zone, target_record, delay):
     current_ip = get_current_ip()
@@ -27,7 +27,7 @@ def main(cf, zone, target_record, delay):
         record_id = search_zone_for_record(cf,zone,target_record)
         if record_id:
             dns_ip = get_ip_by_dns(target_record)
-            print("Record Ip is",dns_ip,"current_ip is",current_ip)
+            print("Record IP is {0} current IP is {1}", dns_ip, current_ip)
             if current_ip != dns_ip:
                 dns_record={'name':target_record,'type':'A','content':current_ip}
                 cf.zones.dns_records.delete(zone,record_id)         
